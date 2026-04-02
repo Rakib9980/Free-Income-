@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ASSET MANAGEMENT | ELITE SYSTEM 2026</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -60,7 +64,7 @@
         .guide-box h4 { margin: 0 0 10px; font-size: 14px; color: #795548; display: flex; align-items: center; gap: 8px; }
         .guide-box p { margin: 0; font-size: 11px; color: #5D4037; line-height: 1.6; font-weight: 600; }
 
-        /* --- ৫. রিয়েল টাস্ক কার্ড (এডমিন পিকচারসহ) --- */
+        /* --- ৫. রিয়েল টাস্ক কার্ড --- */
         .task-card {
             background: #fff; border-radius: 25px; padding: 18px; border: 1.5px solid var(--border);
             margin-bottom: 15px; position: relative; transition: 0.3s;
@@ -73,6 +77,7 @@
 
         .task-body { display: flex; align-items: center; gap: 15px; }
         .task-icon { width: 55px; height: 55px; background: var(--bg); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--gold); }
+        .task-icon img { width: 100%; height: 100%; border-radius: 18px; object-fit: cover; }
         .task-info { flex: 1; }
         .task-info b { font-size: 15px; display: block; font-weight: 800; }
         .task-info p { font-size: 11px; color: #888; margin-top: 5px; }
@@ -126,7 +131,7 @@
 
             <div class="guide-box">
                 <h4><i class="fas fa-gem"></i> ইনকাম বুস্ট গাইডলাইন</h4>
-                <p>আপনার ট্রাস্ট স্কোর বাড়াতে নিয়মিত সঠিক কাজ জমা দিন। ট্রাস্ট স্কোর বাড়লে প্রতিটি টাস্ক থেকে আপনার ইনকাম ১% থেকে ২০% পর্যন্ত লাইভ বৃদ্ধি পাবে। ভুল বা ডুপ্লিকেট স্ক্রিনশট দিলে অ্যাকাউন্ট স্থায়ীভাবে বন্ধ করা হবে।</p>
+                <p>আপনার ট্রাস্ট স্কোর বাড়াতে নিয়মিত সঠিক কাজ জমা দিন। ভুল বা ডুপ্লিকেট স্ক্রিনশট দিলে অ্যাকাউন্ট স্থায়ীভাবে বন্ধ করা হবে।</p>
             </div>
 
             <div class="task-card" style="border-style: dashed; background: var(--bg);">
@@ -143,38 +148,21 @@
         <div id="tasks" class="page">
             <h3 style="font-weight: 900; margin-bottom: 20px;">VERIFIED MISSIONS</h3>
             <div id="mission-container">
-                <div class="task-card" onclick="openMission('Telegram Join', '৳ ২.৫০', 'https://t.me/OfficialLink')">
-                    <div class="task-top">
-                        <div class="admin-profile">
-                            <img src="https://ui-avatars.com/api/?name=Admin&background=000&color=fff">
-                            <span>PLATFORM ADMIN</span>
-                        </div>
-                        <div class="verified-badge"><i class="fas fa-check-circle"></i> VERIFIED</div>
-                    </div>
-                    <div class="task-body">
-                        <div class="task-icon" style="color: var(--blue);"><i class="fa-brands fa-telegram"></i></div>
-                        <div class="task-info">
-                            <b>Official Telegram Channel</b>
-                            <p>আমাদের মূল চ্যানেলে যুক্ত হয়ে গ্যালারি থেকে প্রমাণ জমা দিন।</p>
-                        </div>
-                        <div class="task-reward"><b>৳ ২.৫০</b><small>+১% BOOST</small></div>
-                    </div>
                 </div>
-            </div>
         </div>
 
         <div id="wallet" class="page">
             <h3 style="font-weight: 900; margin-bottom: 20px;">WITHDRAW ASSETS</h3>
             <div class="guide-box" style="background:#E8F5E9; border-color:#C8E6C9;">
                 <h4 style="color:#2E7D32;"><i class="fas fa-clock"></i> পেমেন্ট প্রসেসিং</h4>
-                <p style="color:#2E7D32;">উইথড্র রিকোয়েস্ট দেওয়ার পর আমাদের এডমিন আপনার কাজগুলো ম্যানুয়ালি যাচাই করবে। সব ঠিক থাকলে ১২ ঘণ্টার মধ্যে পেমেন্ট কমপ্লিট হবে।</p>
+                <p style="color:#2E7D32;">উইথড্র রিকোয়েস্ট দেওয়ার পর ১২ ঘণ্টার মধ্যে পেমেন্ট কমপ্লিট হবে।</p>
             </div>
             
             <div style="background:#fff; border:1px solid var(--border); padding:25px; border-radius:30px;">
-                <select class="input-field" style="background:#F3F4F6;"><option>BKASH PERSONAL</option><option>NAGAD PERSONAL</option></select>
-                <input type="number" placeholder="আপনার বিকাশ/নগদ নাম্বার" class="input-field">
-                <input type="number" placeholder="টাকার পরিমাণ (মিনিমাম ২০)" class="input-field">
-                <button class="prime-btn" onclick="tg.showAlert('আপনার রিকোয়েস্ট পেন্ডিং লিস্টে যোগ হয়েছে।')">REQUEST WITHDRAW</button>
+                <select class="input-field"><option>BKASH PERSONAL</option><option>NAGAD PERSONAL</option></select>
+                <input type="number" placeholder="নাম্বার দিন" class="input-field">
+                <input type="number" placeholder="টাকার পরিমাণ" class="input-field">
+                <button class="prime-btn" onclick="tg.showAlert('পেন্ডিং লিস্টে যোগ হয়েছে।')">REQUEST WITHDRAW</button>
             </div>
         </div>
 
@@ -183,7 +171,6 @@
             <div style="text-align: center; border: 1.5px solid var(--border); border-radius: 40px; padding: 50px 20px;">
                 <i class="fas fa-users-crown" style="font-size: 60px; color: var(--gold); margin-bottom: 25px;"></i>
                 <h2>৳ ২.০০ বোনাস</h2>
-                <p style="font-size: 11px; color: #888; margin-bottom: 35px;">আপনার লিংকের মাধ্যমে মেম্বার জয়েন করালে প্রতিটি ভেরিফাইড জয়েনে পাবেন ইনস্ট্যান্ট রিওয়ার্ড।</p>
                 <div id="ref_link" style="background: var(--bg); padding: 20px; border-radius: 20px; border: 1.5px dashed var(--gold); font-size: 11px; font-weight: 900; color: var(--gold); word-break: break-all;">Generating...</div>
                 <button class="prime-btn" style="margin-top: 25px; background: var(--gold); color: #000;" onclick="copyRef()">COPY PARTNER LINK</button>
             </div>
@@ -194,23 +181,16 @@
     <div id="m_modal" class="modal">
         <div class="modal-content">
             <div class="modal-pad">
-                <div class="admin-profile" style="margin-bottom:20px;">
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=000&color=fff">
-                    <b style="font-size:13px;">Admin Guide: <span id="m_title_text">Task</span></b>
-                </div>
-                <div class="guide-box">
-                    <p>১. নিচে দেওয়া লিংকে ক্লিক করে কাজটি শেষ করুন।<br>২. প্রুফ হিসেবে একটি পরিষ্কার স্ক্রিনশট নিন।<br>৩. আপনার ইউজারনেমসহ গ্যালারি থেকে ছবিটি সাবমিট করুন।</p>
-                </div>
-                <input type="text" id="p_user" placeholder="আপনার ইউজারনেম দিন" class="input-field">
+                <b style="font-size:13px;">Admin Guide: <span id="m_title_text">Task</span></b>
+                <div class="guide-box" style="margin-top:15px;"><p id="m_desc_text"></p></div>
+                <input type="text" id="p_user" placeholder="ইউজারনেম দিন" class="input-field">
                 <input type="file" id="p_file" accept="image/*" style="display:none;">
-                <button onclick="document.getElementById('p_file').click()" class="input-field" style="background:#fff; border:1.5px dashed var(--gold); text-align:left; color:#555;">
-                    <i class="fas fa-image" style="color:var(--gold); margin-right:12px;"></i> গ্যালারি থেকে স্ক্রিনশট দিন
-                </button>
+                <button onclick="document.getElementById('p_file').click()" class="input-field" style="background:#fff; border:1.5px dashed var(--gold); text-align:left;">গ্যালারি থেকে স্ক্রিনশট দিন</button>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                     <button class="prime-btn" id="m_link_btn" style="background:var(--blue);">OPEN LINK</button>
                     <button class="prime-btn" onclick="submitWork()">SUBMIT</button>
                 </div>
-                <button onclick="closeModal()" style="width:100%; background:none; border:none; margin-top:20px; color:#AAA; font-size:11px; font-weight:900; cursor:pointer;">CLOSE GUIDE</button>
+                <button onclick="closeModal()" style="width:100%; background:none; margin-top:20px; color:#AAA; font-weight:900;">CLOSE</button>
             </div>
         </div>
     </div>
@@ -223,6 +203,19 @@
     </div>
 
 <script>
+    // --- FIREBASE CONFIG ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyBL-1gCDQXt7f2s3UVmEAhzotCneBkg1dM",
+      authDomain: "free-income-tax-6d428.firebaseapp.com",
+      databaseURL: "https://free-income-tax-6d428-default-rtdb.firebaseio.com",
+      projectId: "free-income-tax-6d428",
+      storageBucket: "free-income-tax-6d428.firebasestorage.app",
+      messagingSenderId: "532674711406",
+      appId: "1:532674711406:web:da6adfad493d6258aebb7f"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
     let tg = window.Telegram.WebApp;
     tg.expand();
 
@@ -230,46 +223,61 @@
         const u = tg.initDataUnsafe?.user;
         if(u) {
             document.getElementById('u_name').innerText = u.first_name.toUpperCase();
-            document.getElementById('u_avatar').src = u.photo_url || "https://ui-avatars.com/api/?background=FFFFFF&color=A67C00&bold=true&name=" + u.first_name;
-            document.getElementById('ref_link').innerText = "https://t.me/YOUR_BOT_USERNAME?start=" + u.id;
+            document.getElementById('u_avatar').src = u.photo_url || "https://ui-avatars.com/api/?name=" + u.first_name;
+            document.getElementById('ref_link').innerText = "https://t.me/YOUR_BOT?start=" + u.id;
+            
+            // রিয়েল ব্যালেন্স কানেক্ট
+            db.ref('users/' + u.id).on('value', (snap) => {
+                if(snap.exists()) document.getElementById('u_bal').innerText = snap.val().balance.toFixed(2);
+                else db.ref('users/' + u.id).set({ id: u.id, name: u.first_name, balance: 0.00 });
+            });
         }
     }
 
+    // এডমিন থেকে টাস্ক রিসিভ করা
+    db.ref('tasks').on('value', (snapshot) => {
+        const container = document.getElementById('mission-container');
+        let html = "";
+        snapshot.forEach((child) => {
+            const task = child.val();
+            html += `
+                <div class="task-card" onclick="openMission('${task.name}', '${task.reward}', '${task.link}', '${task.desc}')">
+                    <div class="task-top">
+                        <div class="admin-profile"><img src="https://ui-avatars.com/api/?name=Admin"><span>ADMIN</span></div>
+                        <div class="verified-badge">VERIFIED</div>
+                    </div>
+                    <div class="task-body">
+                        <div class="task-icon">${task.image ? `<img src="${task.image}">` : `<i class="fas ${task.icon}"></i>`}</div>
+                        <div class="task-info"><b>${task.name}</b><p>${task.desc.substring(0,40)}...</p></div>
+                        <div class="task-reward"><b>৳ ${task.reward}</b></div>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    });
+
     function nav(id, el) {
-        tg.HapticFeedback.impactOccurred('medium');
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.dock-tab').forEach(t => t.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(el) el.classList.add('active');
+        el.classList.add('active');
     }
 
-    function openMission(title, reward, link) {
+    function openMission(title, reward, link, desc) {
         document.getElementById('m_title_text').innerText = title;
+        document.getElementById('m_desc_text').innerText = desc;
         document.getElementById('m_modal').style.display = 'flex';
-        document.getElementById('m_link_btn').onclick = () => { window.open(link, '_blank'); };
-        tg.HapticFeedback.impactOccurred('light');
+        document.getElementById('m_link_btn').onclick = () => window.open(link, '_blank');
     }
 
     function closeModal() { document.getElementById('m_modal').style.display = 'none'; }
 
     function submitWork() {
-        const u = document.getElementById('p_user').value;
-        const f = document.getElementById('p_file').files[0];
-        if(!u || !f) {
-            tg.showAlert("⚠️ গাইডলাইন অনুযায়ী ইউজারনেম এবং গ্যালারি থেকে স্ক্রিনশট প্রদান করুন!");
-            return;
-        }
-        tg.showAlert("✅ আপনার কাজ জমা হয়েছে! এডমিন যাচাই করে পেমেন্ট নিশ্চিত করবেন।");
+        tg.showAlert("✅ আপনার প্রুফ জমা হয়েছে!");
         closeModal();
-    }
-
-    function copyRef() {
-        const link = document.getElementById('ref_link').innerText;
-        navigator.clipboard.writeText(link);
-        tg.showAlert("✅ পার্টনার লিংক কপি হয়েছে!");
     }
 
     init();
 </script>
 </body>
-</html>
+                </html>

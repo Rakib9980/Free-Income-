@@ -3,301 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LETHAL ELITE PRO</title>
+    <title>FREE INCOME TAX 2026 - OFFICIAL</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&family=Noto+Sans+Bengali:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-gold: #B8860B; /* ডার্ক গোল্ড */
-            --bg-white: #FFFFFF;
-            --surface: #F9F9F9;
-            --text-main: #1D1D1F;
-            --border-color: #E5E5E7;
-            --shadow-soft: 0 4px 12px rgba(0,0,0,0.05);
+            --gold: #D4AF37;
+            --dark: #0A0A0A;
+            --white: #FFFFFF;
+            --gray: #F2F2F7;
+            --success: #34C759;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
-            margin: 0; background: var(--bg-white); color: var(--text-main); 
-            font-family: 'Outfit', sans-serif; height: 100vh; display: flex; flex-direction: column;
+            margin: 0; background: var(--white); color: var(--dark); 
+            font-family: 'Outfit', 'Noto Sans Bengali', sans-serif; height: 100vh; overflow: hidden;
         }
 
-        /* --- ১. ফিক্সড টপ প্রোফাইল (জায়গা মত সেট করা) --- */
-        .top-header {
-            padding: 20px; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid var(--border-color); background: #fff;
+        /* হেডার */
+        .header {
+            padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); z-index: 1000;
+            border-bottom: 1px solid #EEE; position: sticky; top: 0;
         }
-        .user-block { display: flex; align-items: center; gap: 12px; }
-        .user-avatar { width: 52px; height: 52px; border-radius: 16px; border: 2px solid var(--primary-gold); object-fit: cover; }
-        .user-info h4 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.5px; }
-        .user-info p { margin: 0; font-size: 11px; color: #8E8E93; font-weight: 600; margin-top: 2px; }
+        .u-meta { display: flex; align-items: center; gap: 12px; }
+        .u-meta img { width: 45px; height: 45px; border-radius: 12px; border: 2px solid var(--gold); padding: 2px; }
+        .u-meta b { font-size: 14px; font-weight: 900; }
+        .u-meta span { font-size: 9px; color: var(--gold); font-weight: 800; }
 
-        .balance-card {
-            background: var(--surface); padding: 10px 18px; border-radius: 14px;
-            border: 1px solid var(--border-color); text-align: right;
+        .top-wallet { background: var(--dark); padding: 8px 15px; border-radius: 12px; text-align: right; }
+        .top-wallet small { font-size: 7px; color: var(--gold); font-weight: 800; display: block; }
+        .top-wallet b { font-size: 16px; color: #fff; }
+
+        /* মেইন স্ক্রলার */
+        .scroller { padding: 20px; height: calc(100vh - 165px); overflow-y: auto; padding-bottom: 100px; }
+        .page { display: none; }
+        .page.active { display: block; animation: slideUp 0.4s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* প্রিমিয়াম ব্যানার */
+        .income-banner {
+            width: 100%; height: 170px; border-radius: 25px; overflow: hidden; position: relative; margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .balance-card span { font-size: 9px; color: #888; font-weight: 800; display: block; text-transform: uppercase; }
-        .balance-card b { font-size: 17px; color: var(--primary-gold); font-family: 'Inter'; }
-
-        /* --- ২. মেইন স্ক্রল এরিয়া --- */
-        .main-view { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ব্যানার ও নোটিশ */
-        .promo-img { width: 100%; height: 170px; border-radius: 24px; object-fit: cover; margin-bottom: 15px; box-shadow: var(--shadow-soft); }
-        .alert-box { 
-            background: #FFFBEB; border: 1px solid #FEF3C7; padding: 14px; 
-            border-radius: 16px; text-align: center; margin-bottom: 25px;
+        .income-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .banner-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0; padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: #fff;
         }
-        .alert-box b { color: #D97706; font-size: 13px; font-weight: 800; }
+        .banner-overlay h2 { margin: 0; font-size: 18px; font-weight: 900; color: var(--gold); }
+        .banner-overlay p { margin: 5px 0 0; font-size: 10px; opacity: 0.8; }
 
-        /* বাটন ও কার্ড */
-        .action-card {
-            background: #fff; border: 1px solid var(--border-color); padding: 20px;
-            border-radius: 20px; display: flex; align-items: center; margin-bottom: 12px;
-            box-shadow: var(--shadow-soft); transition: 0.2s;
+        /* টাস্ক কার্ড */
+        .task-card {
+            background: #fff; border-radius: 20px; padding: 18px; margin-bottom: 12px;
+            display: flex; align-items: center; border: 1px solid #F0F0F0; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
-        .action-card:active { transform: scale(0.98); background: var(--surface); }
-        .icon-sq { width: 48px; height: 48px; background: var(--surface); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary-gold); }
-        .card-desc { margin-left: 15px; flex: 1; }
-        .card-desc b { font-size: 15px; display: block; }
-        .card-desc span { font-size: 11px; color: #8E8E93; }
+        .cat-icon { width: 48px; height: 48px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: #F9F9FB; border: 1px solid #EEE; }
+        .task-body { margin-left: 15px; flex: 1; }
+        .task-body b { font-size: 15px; font-weight: 800; color: #111; }
+        .task-body p { margin: 4px 0 0; font-size: 10px; color: #888; }
+        .reward-tag { background: #000; color: #fff; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 900; }
 
-        /* প্রোফাইল ড্যাশবোর্ড (বিশাল ও হাই-কোয়ালিটি) */
-        .profile-hero { text-align: center; padding: 20px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 25px; }
-        .profile-hero img { width: 110px; height: 110px; border-radius: 35px; border: 4px solid var(--primary-gold); margin-bottom: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-item { background: var(--surface); padding: 20px; border-radius: 22px; border: 1px solid var(--border-color); text-align: center; }
-        .stat-item i { color: var(--primary-gold); font-size: 20px; margin-bottom: 8px; }
-        .stat-item h3 { margin: 0; font-size: 20px; font-family: 'Inter'; font-weight: 700; }
-        .stat-item p { margin: 0; font-size: 10px; color: #888; font-weight: 800; text-transform: uppercase; margin-top: 4px; }
-
-        /* ওয়ালেট ইনপুট */
-        .p-input { width: 100%; padding: 18px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 15px; font-family: 'Outfit'; font-size: 15px; }
-        .btn-gold { width: 100%; padding: 18px; border-radius: 18px; border: none; background: var(--primary-gold); color: #fff; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 8px 20px rgba(184, 134, 11, 0.2); }
-
-        /* --- ৩. বটম নেভিগেশন (জায়গা মত ফিক্সড) --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; height: 85px;
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(15px);
-            border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px;
+        /* মোডাল (টাস্ক ডিটেইলস) */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 5000; display: none;
+            align-items: center; justify-content: center; padding: 20px;
         }
-        .nav-link { text-align: center; color: #C7C7CC; transition: 0.3s; width: 25%; }
-        .nav-link.active { color: var(--primary-gold); }
-        .nav-link i { font-size: 22px; display: block; margin-bottom: 4px; }
-        .nav-link span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+        .modal-box {
+            background: #fff; width: 100%; max-width: 400px; border-radius: 30px;
+            overflow: hidden; animation: zoomIn 0.3s ease; max-height: 90vh; overflow-y: auto;
+        }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .modal-img { width: 100%; height: 180px; object-fit: cover; }
+        .modal-info { padding: 25px; }
+        .input-vip { width: 100%; padding: 16px; border-radius: 15px; border: 1px solid #EEE; background: #F9F9FB; margin-bottom: 12px; font-family: 'Outfit'; font-size: 13px; font-weight: 700; }
+        .btn-prime { width: 100%; padding: 18px; background: var(--dark); color: #fff; border: none; border-radius: 18px; font-weight: 900; font-size: 14px; cursor: pointer; }
 
+        /* নেভিগেশন বার */
+        .navbar {
+            position: fixed; bottom: 15px; left: 15px; right: 15px; height: 75px;
+            background: #121212; border-radius: 25px; display: flex; justify-content: space-around; align-items: center;
+        }
+        .nav-link { text-align: center; color: rgba(255,255,255,0.4); width: 25%; }
+        .nav-link.active { color: var(--gold); }
+        .nav-link i { font-size: 18px; display: block; margin-bottom: 4px; }
+        .nav-link span { font-size: 8px; font-weight: 900; text-transform: uppercase; }
+
+        /* জিরো ডাটা স্টেট */
+        .no-data { text-align: center; padding: 60px 20px; opacity: 0.5; }
+        .no-data i { font-size: 40px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="top-header">
-        <div class="user-block">
-            <img src="" id="u_photo_top" class="user-avatar">
-            <div class="user-info">
-                <h4 id="u_name_top">USERNAME</h4>
-                <p id="u_id_top">ID: 000000000</p>
-            </div>
+    <div class="header">
+        <div class="u-meta">
+            <img src="" id="u_pic">
+            <div><b id="u_name">USER</b><br><span><i class="fas fa-check-circle"></i> VERIFIED</span></div>
         </div>
-        <div class="balance-card">
-            <span>AVAILABLE BALANCE</span>
-            <b>৳ <span id="u_bal_top">0.00</span></b>
-        </div>
+        <div class="top-wallet"><small>WALLET</small><b>৳ <span id="u_bal">0.00</span></b></div>
     </div>
 
-    <div class="main-view">
+    <div class="scroller">
         
-        <div id="home" class="section active">
-            <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2064&auto=format&fit=crop" class="promo-img">
+        <div id="home" class="page active">
+            <div class="income-banner">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop">
+                <div class="banner-overlay">
+                    <h2>START EARNING ASSETS</h2>
+                    <p>সহজ মিশন সম্পন্ন করে আপনার ইনকাম শুরু করুন এখনই।</p>
+                </div>
+            </div>
             
-            <div class="alert-box">
-                <b><i class="fas fa-bullhorn"></i> মিনিমাম উইথড্র মাত্র ২০ টাকা!</b>
+            <div class="task-card" onclick="nav('refer', 3)">
+                <div class="cat-icon" style="color: #0088cc;"><i class="fas fa-user-plus"></i></div>
+                <div class="task-body"><b>Referral Program</b><p>প্রতি রেফারে ৳ ২.০০ বোনাস পান।</p></div>
+                <div class="reward-tag">HOT</div>
             </div>
 
-            <div class="action-card" onclick="referLink()">
-                <div class="icon-sq"><i class="fas fa-user-plus"></i></div>
-                <div class="card-desc">
-                    <b>Referral Program</b>
-                    <span>শেয়ার করে প্রতিবার আয় করুন ৳২.০০</span>
-                </div>
-                <i class="fas fa-chevron-right" style="color:#eee;"></i>
+            <div class="task-card" onclick="claimDaily()">
+                <div class="cat-icon" style="color: var(--success);"><i class="fas fa-coins"></i></div>
+                <div class="task-body"><b>Daily Assets</b><p>প্রতিদিন ফ্রিতে ৳ ০.৫০ রিওয়ার্ড।</p></div>
+                <div class="reward-tag">FREE</div>
             </div>
+        </div>
 
-            <div class="action-card" onclick="claimDaily()">
-                <div class="icon-sq"><i class="fas fa-gift"></i></div>
-                <div class="card-desc">
-                    <b>Daily Asset Bonus</b>
-                    <span>প্রতিদিন ক্লেম করুন ৳০.৫০</span>
+        <div id="tasks" class="page">
+            <h3 style="font-weight: 900; margin-bottom: 20px;">AVAILABLE MISSIONS</h3>
+            <div id="task-list">
+                <div class="no-data">
+                    <i class="fas fa-folder-open"></i>
+                    <p style="font-size: 12px; font-weight: 800;">বর্তমানে কোনো মিশন এভেইলএবল নেই!</p>
                 </div>
             </div>
         </div>
 
-        <div id="tasks" class="section">
-            <h3 style="font-weight:800; margin-bottom:20px;">MISSIONS</h3>
-            <div id="mission-list">
-                <p style="text-align:center; color:#888; padding:50px 0;">অ্যাডমিন থেকে বর্তমানে কোনো টাস্ক নেই।</p>
+        <div id="wallet" class="page">
+            <h3 style="font-weight: 900; margin-bottom: 20px;">WITHDRAW ASSETS</h3>
+            <div style="background: #fff; padding: 25px; border-radius: 25px; border: 1px solid #EEE;">
+                <select class="input-vip"><option>BKASH PERSONAL</option><option>NAGAD PERSONAL</option></select>
+                <input type="number" id="w_num" class="input-vip" placeholder="একাউন্ট নাম্বার দিন">
+                <input type="number" id="w_amt" class="input-vip" placeholder="পরিমাণ (মিনিমাম ২০)">
+                <button class="btn-prime" onclick="withdraw()">সাবমিট করুন</button>
+            </div>
+            
+            <div id="w-history" style="margin-top: 30px;">
+                <h4 style="font-size: 12px; color: #AAA;">TRANSACTION LOGS</h4>
+                <div class="no-data" style="padding: 30px 0;">
+                    <p style="font-size: 11px;">কোনো উইথড্র রেকর্ড পাওয়া যায়নি।</p>
+                </div>
             </div>
         </div>
 
-        <div id="wallet" class="section">
-            <h3 style="font-weight:800; margin-bottom:20px;">WITHDRAW FUNDS</h3>
-            <div style="background:var(--surface); padding:25px; border-radius:24px; border:1px solid var(--border-color);">
-                <select class="p-input">
-                    <option>BKASH PERSONAL</option>
-                    <option>NAGAD PERSONAL</option>
-                </select>
-                <input type="number" class="p-input" id="w_num" placeholder="Account Number">
-                <input type="number" class="p-input" id="w_amt" placeholder="Amount (Min: 20)">
-                <button class="btn-gold" onclick="submitWithdraw()">PROCESS PAYOUT</button>
+        <div id="refer" class="page">
+            <h3 style="font-weight: 900; margin-bottom: 20px;">REFER & EARN</h3>
+            <div style="text-align: center; background: #fff; padding: 40px 20px; border-radius: 30px; border: 1px solid #EEE;">
+                <i class="fas fa-gift" style="font-size: 50px; color: var(--gold);"></i>
+                <h2 style="margin: 15px 0 5px;">৳ ২.০০ বোনাস</h2>
+                <p style="font-size: 11px; color: #888;">লিংক কপি করে বন্ধুদের সাথে শেয়ার করুন।</p>
+                <div id="ref_link" style="background: #F9F9FB; padding: 15px; border-radius: 15px; border: 1px dashed var(--gold); font-size: 10px; margin: 25px 0; font-weight: 800;">Loading...</div>
+                <button class="btn-prime" onclick="copyRef()">লিংক কপি করুন</button>
             </div>
-        </div>
-
-        <div id="profile" class="section">
-            <div class="profile-hero">
-                <img src="" id="big_u_photo">
-                <h2 id="big_u_name">NAME</h2>
-                <p id="big_u_id">ID: 00000000</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <i class="fas fa-wallet"></i>
-                    <h3 id="stat_bal">0.00</h3>
-                    <p>Total Balance</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <h3 id="stat_ref">0</h3>
-                    <p>Total Refer</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-check-double"></i>
-                    <h3 id="stat_task">0</h3>
-                    <p>Tasks Done</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-crown"></i>
-                    <h3 style="color:var(--primary-gold)">ELITE</h3>
-                    <p>Account Rank</p>
-                </div>
-            </div>
-
-            <div id="owner-panel" style="display:none; margin-top:30px;">
-                <button class="btn-gold" style="background:#000;" onclick="showAdmin()">
-                    <i class="fas fa-tools"></i> ADMIN COMMAND CENTER
-                </button>
-            </div>
-        </div>
-
-        <div id="admin" class="section">
-            <h3 style="font-weight:800; color:var(--primary-gold);">POST NEW TASK</h3>
-            <input type="text" id="adm_title" class="p-input" placeholder="Task Name">
-            <input type="number" id="adm_price" class="p-input" placeholder="Reward Price">
-            <input type="text" id="adm_link" class="p-input" placeholder="Task Link">
-            <button class="btn-gold" onclick="pushTask()">PUSH LIVE</button>
         </div>
 
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-link active" onclick="navigate('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-link" onclick="navigate('tasks', this)"><i class="fas fa-tasks"></i><span>Tasks</span></div>
-        <div class="nav-link" onclick="navigate('wallet', this)"><i class="fas fa-wallet"></i><span>Wallet</span></div>
-        <div class="nav-link" onclick="navigate('profile', this)"><i class="fas fa-user-circle"></i><span>Profile</span></div>
+    <div id="taskModal" class="modal">
+        <div class="modal-box">
+            <img src="" id="m_img" class="modal-img">
+            <div class="modal-info">
+                <h2 id="m_title">Mission</h2>
+                <p id="m_desc" style="background: #F8F9FA; padding: 15px; border-radius: 15px; font-size: 12px; color: #555;"></p>
+                <b style="color: var(--gold); display: block; margin-bottom: 15px;">রিওয়ার্ড: ৳ <span id="m_rew">0.00</span></b>
+                
+                <input type="text" id="p_user" class="input-vip" placeholder="আপনার প্রমাণ (Username/ID)">
+                <input type="file" id="p_file" style="display:none;">
+                <button class="input-vip" style="text-align:left;" onclick="document.getElementById('p_file').click()"><i class="fas fa-camera"></i> স্ক্রিনশট আপলোড</button>
+                
+                <button class="btn-prime" style="background: #0088cc; margin-bottom: 10px;" id="m_link_btn">কাজটি শুরু করুন</button>
+                <button class="btn-prime" onclick="submitMission()">সাবমিট প্রুফ</button>
+                <button onclick="closeModal()" style="width: 100%; border: none; background: none; margin-top: 15px; color: #AAA; font-size: 11px; font-weight: 800;">বন্ধ করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar">
+        <div class="nav-link active" onclick="nav('home', this)"><i class="fas fa-house"></i><span>Home</span></div>
+        <div class="nav-link" onclick="nav('tasks', this)"><i class="fas fa-bolt"></i><span>Missions</span></div>
+        <div class="nav-link" onclick="nav('wallet', this)"><i class="fas fa-wallet"></i><span>Wallet</span></div>
+        <div class="nav-link" onclick="nav('refer', this)"><i class="fas fa-users-crown"></i><span>Invite</span></div>
     </div>
 
 <script>
     let tg = window.Telegram.WebApp;
     tg.expand();
-    const ADMIN_ID = 8562914479;
 
-    let balance = parseFloat(localStorage.getItem('lt_balance')) || 0.00;
-    let referCount = parseInt(localStorage.getItem('lt_refers')) || 0;
-    let taskDone = parseInt(localStorage.getItem('lt_done')) || 0;
-
-    function refreshUI() {
-        document.getElementById('u_bal_top').innerText = balance.toFixed(2);
-        document.getElementById('stat_bal').innerText = balance.toFixed(2);
-        document.getElementById('stat_ref').innerText = referCount;
-        document.getElementById('stat_task').innerText = taskDone;
-    }
+    let bal = parseFloat(localStorage.getItem('fit_bal')) || 0.00;
 
     function init() {
         const user = tg.initDataUnsafe?.user;
         if(user) {
-            const name = user.first_name.toUpperCase();
-            document.getElementById('u_name_top').innerText = name;
-            document.getElementById('big_u_name').innerText = name;
-            document.getElementById('u_id_top').innerText = "ID: " + user.id;
-            document.getElementById('big_u_id').innerText = "ID: " + user.id;
-
-            let photo = user.photo_url || "https://ui-avatars.com/api/?background=B8860B&color=fff&name=" + user.first_name;
-            document.getElementById('u_photo_top').src = photo;
-            document.getElementById('big_u_photo').src = photo;
-
-            if(user.id === ADMIN_ID) {
-                document.getElementById('owner-panel').style.display = 'block';
-            }
+            document.getElementById('u_name').innerText = user.first_name.toUpperCase();
+            document.getElementById('ref_link').innerText = "https://t.me/FREEINCOMETAX2026_BOT?start=" + user.id;
+            document.getElementById('u_pic').src = user.photo_url || "https://ui-avatars.com/api/?name=" + user.first_name;
         }
-        refreshUI();
+        updateBal();
     }
 
-    // ১. রেফারেল সিস্টেম (Fixed)
-    function referLink() {
-        const uid = tg.initDataUnsafe?.user?.id || '0000';
-        const link = "https://t.me/YourBotName?start=" + uid;
-        tg.showPopup({
-            title: 'REFERRAL LINK',
-            message: `আপনার লিংক: ${link}\n\nশেয়ার করুন এবং টাকা আয় করুন!`,
-            buttons: [{type: 'ok', text: 'কপি করলাম'}]
-        });
-        // ডেমো ক্রেডিট
-        balance += 2.00;
-        referCount += 1;
-        localStorage.setItem('lt_balance', balance);
-        localStorage.setItem('lt_refers', referCount);
-        refreshUI();
-    }
+    function updateBal() { document.getElementById('u_bal').innerText = bal.toFixed(2); }
 
-    // ২. ডেইলি বোনাস
-    function claimDaily() {
-        const last = localStorage.getItem('last_claim');
-        if(last && (Date.now() - last < 86400000)) {
-            tg.showAlert("আবার ২৪ ঘণ্টা পর আসুন!");
-            return;
-        }
-        balance += 0.50;
-        localStorage.setItem('lt_balance', balance);
-        localStorage.setItem('last_claim', Date.now());
-        refreshUI();
-        tg.showAlert("✅ ৳০.৫০ বোনাস যোগ হয়েছে!");
-    }
-
-    // ৩. নেভিগেশন
-    function navigate(id, el) {
-        tg.HapticFeedback.impactOccurred('light');
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    function nav(id, el) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        el.classList.add('active');
+        if(el) el.classList.add('active');
+        tg.HapticFeedback.selectionChanged();
     }
 
-    function showAdmin() {
-        navigate('admin', document.querySelectorAll('.nav-link')[3]);
+    function closeModal() { document.getElementById('taskModal').style.display = 'none'; }
+
+    function submitMission() {
+        tg.showAlert("✅ প্রুফ সাবমিট হয়েছে! অ্যাডমিন চেক করে রিওয়ার্ড দিবে।");
+        closeModal();
     }
 
-    function submitWithdraw() {
-        const amt = document.getElementById('w_amt').value;
-        if(amt < 20) { tg.showAlert("মিনিমাম ২০ টাকা!"); return; }
-        if(amt > balance) { tg.showAlert("ব্যালেন্স কম!"); return; }
-        balance -= parseFloat(amt);
-        localStorage.setItem('lt_balance', balance);
-        refreshUI();
-        tg.showAlert("✅ রিকোয়েস্ট সফল হয়েছে!");
+    function claimDaily() {
+        const last = localStorage.getItem('fit_d');
+        if(last && (Date.now() - last < 86400000)) { tg.showAlert("❌ আজ বোনাস নেওয়া হয়েছে!"); return; }
+        bal += 0.50;
+        localStorage.setItem('fit_bal', bal);
+        localStorage.setItem('fit_d', Date.now());
+        updateBal();
+        tg.showAlert("✅ অভিনন্দন! ৳ ০.৫০ যোগ হয়েছে।");
+    }
+
+    function withdraw() {
+        const a = document.getElementById('w_amt').value;
+        if(a < 20) { tg.showAlert("মিনিমাম ২০ টাকা লাগবে!"); return; }
+        if(a > bal) { tg.showAlert("ব্যালেন্স নেই!"); return; }
+        bal -= parseFloat(a);
+        localStorage.setItem('fit_bal', bal);
+        updateBal();
+        tg.showAlert("✅ রিকোয়েস্ট পাঠানো হয়েছে!");
+    }
+
+    function copyRef() {
+        navigator.clipboard.writeText(document.getElementById('ref_link').innerText);
+        tg.showAlert("লিংক কপি হয়েছে!");
     }
 
     init();

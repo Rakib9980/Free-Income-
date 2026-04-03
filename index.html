@@ -2,139 +2,162 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DIAMOND ELITE | FIX EDITION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>DIAMOND ELITE | ULTIMATE PRO</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        :root { --primary: #00D2FF; --diamond: #E0EAFC; --gold: #FFD700; --glass: rgba(255, 255, 255, 0.08); }
+        :root { --primary: #00D2FF; --neon: 0 0 20px rgba(0, 210, 255, 0.4); --glass: rgba(255, 255, 255, 0.08); --gold: #FFD700; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body { background: #050505; color: #fff; font-family: 'Outfit', sans-serif; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% -20%, #1a2a6c, #050505); }
-
-        /* Intro Ad */
-        #ad-screen { position: fixed; inset: 0; background: #000; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
-        .diamond-logo { font-size: 80px; color: var(--primary); margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
-        /* Security */
-        #captcha-screen { position: fixed; inset: 0; background: #050505; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
-        .math-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 30px 60px; border-radius: 30px; margin-bottom: 30px; }
-
-        /* App Main */
-        .premium-header { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.5); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .avatar-box { width: 50px; height: 50px; padding: 2px; background: linear-gradient(45deg, #00d2ff, #f06); border-radius: 15px; animation: hue 3s infinite; }
-        @keyframes hue { 100% { filter: hue-rotate(360deg); } }
-        .avatar-box img { width: 100%; height: 100%; border-radius: 13px; object-fit: cover; }
         
-        .compact-wallet { text-align: right; background: rgba(255,255,255,0.05); padding: 8px 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); }
-        .compact-wallet b { font-size: 18px; color: var(--primary); display: block; }
+        body { 
+            background: #020202; color: #fff; font-family: 'Outfit', sans-serif; 
+            height: 100vh; overflow: hidden; position: fixed; width: 100%;
+            background-image: radial-gradient(circle at 50% -20%, #1a2a6c, #020202); 
+        }
 
-        /* Content Area */
-        .main-container { height: calc(100vh - 160px); overflow-y: auto; padding: 15px; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeInUp 0.5s ease; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #ad-screen, #invite-screen { position: fixed; inset: 0; background: #000; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        
+        .premium-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
+        .avatar-frame { width: 50px; height: 50px; padding: 3px; background: linear-gradient(45deg, var(--primary), #9d50bb); border-radius: 15px; }
+        .avatar-frame img { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; }
 
-        /* Diamond Task Card */
-        .diamond-card { background: var(--glass); border-radius: 22px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .task-img { width: 60px; height: 60px; border-radius: 15px; object-fit: cover; border: 2px solid var(--primary); cursor: zoom-in; }
-        .task-price { color: #00FF88; font-weight: 900; font-size: 13px; background: rgba(0,255,136,0.1); padding: 2px 10px; border-radius: 8px; }
+        .main-container { height: 100vh; overflow-y: auto; padding: 100px 15px 120px; -webkit-overflow-scrolling: touch; }
+        .page { display: none; animation: slideUp 0.3s ease-out; }
+        .page.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Image Viewer (FIXED) */
-        #img-viewer { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 30000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        #img-viewer img { max-width: 90%; max-height: 80vh; border-radius: 20px; border: 2px solid var(--primary); }
-        .close-img { position: absolute; top: 40px; right: 25px; color: #fff; font-size: 35px; }
+        /* Task Cards */
+        .task-lux-card { background: var(--glass); border-radius: 30px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; padding: 15px; }
+        .task-img { width: 100%; border-radius: 20px; margin-bottom: 15px; }
+        .pending-badge { background: #FFD700; color: #000; font-size: 10px; font-weight: 900; padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
 
-        /* Dock (FIXED ICON) */
-        .vip-dock { position: fixed; bottom: 0; left: 0; right: 0; height: 85px; background: #000; display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .dock-item { color: #555; text-align: center; flex: 1; transition: 0.3s; }
-        .dock-item.active { color: var(--primary); }
-        .dock-item i { font-size: 24px; display: block; margin-bottom: 4px; }
-        .dock-item span { font-size: 10px; font-weight: 800; }
+        /* Leaderboard Premium List */
+        .rank-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 25px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; position: relative; overflow: hidden; }
+        .rank-number { font-size: 22px; font-weight: 900; color: var(--primary); min-width: 35px; }
+        .rank-avatar { width: 55px; height: 55px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.1); }
+        .rank-info { flex: 1; }
+        .rank-stats { display: flex; gap: 15px; margin-top: 5px; font-size: 12px; color: #aaa; }
+        .rank-stats span b { color: var(--primary); }
 
-        /* Premium Buttons */
-        .elite-btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 900; background: linear-gradient(90deg, #4facfe, #00f2fe); color: #fff; cursor: pointer; }
-        .elite-input { width: 100%; padding: 18px; border-radius: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; margin-bottom: 12px; }
+        /* Withdraw History */
+        .history-card { background: rgba(0,0,0,0.3); border-left: 4px solid var(--primary); padding: 15px; border-radius: 15px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .status-pill { padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+
+        .method-selector { display: flex; gap: 12px; margin-bottom: 20px; }
+        .m-btn { flex: 1; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #fff; font-weight: 900; cursor: pointer; }
+        .m-btn.active { border-color: var(--primary); background: rgba(0, 210, 255, 0.1); color: var(--primary); }
+
+        .elite-btn { width: 100%; padding: 18px; border-radius: 20px; border: none; font-weight: 900; background: linear-gradient(90deg, #4facfe, #00f2fe); color: #fff; cursor: pointer; text-transform: uppercase; }
+        .elite-input { width: 100%; padding: 18px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; margin-bottom: 15px; outline: none; text-align: center; }
+
+        .vip-dock { position: fixed; bottom: 0; left: 0; right: 0; height: 95px; background: rgba(5,5,5,0.95); backdrop-filter: blur(25px); display: flex; border-top: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; z-index: 1000; }
+        .dock-item { color: #444; text-align: center; flex: 1; padding-top: 15px; font-size: 22px; transition: 0.3s; }
+        .dock-item.active { color: var(--primary); text-shadow: var(--neon); }
+
+        #single-task-page { position: fixed; inset: 0; background: #020202; z-index: 5000; display: none; flex-direction: column; overflow-y: auto; }
+        .rocket-anim { animation: rocketFly 0.8s ease-in forwards; display: inline-block; }
+        @keyframes rocketFly { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-500px); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="img-viewer">
-        <span class="close-img" onclick="closeImg()"><i class="fa-solid fa-xmark"></i></span>
-        <img id="full-img" src="">
-    </div>
-
     <div id="ad-screen">
-        <div class="diamond-logo"><i class="fa-solid fa-gem"></i></div>
-        <h1 style="font-weight: 900; letter-spacing: 2px;">DIAMOND ELITE</h1>
-        <p style="color: #888; margin: 20px 0 40px; font-size: 14px;">The Ultimate Freelancing Powerhouse 2026.</p>
-        <button class="elite-btn" onclick="goCaptcha()" style="width: auto; padding: 15px 50px;">GET STARTED</button>
+        <i class="fa-solid fa-gem" style="font-size: 80px; color: var(--primary); filter: drop-shadow(var(--neon));"></i>
+        <h1 style="font-size: 30px; font-weight: 900; margin-top:20px;">DIAMOND ELITE</h1>
+        <button class="elite-btn" onclick="goToMath()" style="width:auto; padding:18px 60px; margin-top:40px;">GET STARTED</button>
     </div>
 
-    <div id="captcha-screen">
-        <div class="math-card"><div id="math-ques" style="font-size: 40px; font-weight: 900; color: var(--primary);"></div></div>
-        <input type="number" id="math-ans" placeholder="Enter Result" class="elite-input" style="text-align:center; max-width: 250px;">
-        <button class="elite-btn" onclick="verify()" style="max-width: 250px;">UNLOCK APP</button>
+    <div id="invite-screen" style="display:none;">
+        <div style="background:var(--glass); padding:35px; border-radius:40px; width:90%; border:1px solid rgba(255,255,255,0.1);">
+            <div id="math-box" style="font-size:45px; font-weight:900; margin-bottom:30px;"></div>
+            <input type="number" id="math-ans" placeholder="উত্তর দিন" class="elite-input">
+            <input type="text" id="ref-code-input" placeholder="রেফার কোড (ঐচ্ছিক)" class="elite-input">
+            <button class="elite-btn" onclick="verifyAndOpen()">ENTER SYSTEM</button>
+        </div>
     </div>
 
     <div id="main-app" style="display:none;">
         <header class="premium-header">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div class="avatar-box"><img id="u_avatar" src=""></div>
-                <div><b id="u_name" style="font-size:14px;">...</b><span style="font-size:9px; color:var(--primary); font-weight:900; display:block;">ELITE MEMBER</span></div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div class="avatar-frame"><img id="u_avatar" src=""></div>
+                <div><b id="u_name" style="font-size:14px;">...</b><span id="u_id_display" style="font-size:10px; color:#aaa; display:block;"></span></div>
             </div>
-            <div class="compact-wallet"><span>Diamond Bal</span><b id="u_bal">৳ 0.00</b></div>
+            <div style="text-align:right;">
+                <span style="font-size:10px; color:#aaa; font-weight:900;">MY BALANCE</span>
+                <b id="u_bal" style="font-size:22px; color:var(--primary); display:block;">৳ 0.00</b>
+            </div>
         </header>
 
         <div class="main-container">
             <div id="home" class="page active">
-                <h4 style="margin-bottom:15px; color:#555; letter-spacing:1px;">ACTIVE MISSIONS</h4>
-                <div id="mission-list"></div>
+                <div id="task-feed"></div>
+            </div>
+
+            <div id="leaderboard" class="page">
+                <div style="text-align:center; margin-bottom:30px;">
+                    <i class="fa-solid fa-trophy" style="font-size:50px; color:var(--gold); filter: drop-shadow(0 0 10px rgba(255,215,0,0.3));"></i>
+                    <h2 style="font-weight:900; margin-top:10px;">TOP 10 ELITE LEADERS</h2>
+                </div>
+                <div id="rank-list"></div>
             </div>
 
             <div id="wallet" class="page">
-                <div style="background:var(--glass); padding:25px; border-radius:25px; border:1px solid rgba(255,255,255,0.1);">
-                    <h3 style="margin-bottom:15px;">DIAMOND BANK</h3>
-                    <select id="w_method" class="elite-input"><option>BKASH</option><option>NAGAD</option></select>
-                    <input type="number" id="w_num" placeholder="Wallet Number" class="elite-input">
-                    <input type="number" id="w_amt" placeholder="Amount (৳)" class="elite-input">
-                    <button class="elite-btn" onclick="withdraw()">WITHDRAW NOW</button>
+                <div style="background:var(--glass); border:1px solid rgba(255,255,255,0.1); padding:25px; border-radius:35px; margin-bottom:30px;">
+                    <h3 style="text-align:center; margin-bottom:20px;">WITHDRAW FUNDS</h3>
+                    <div class="method-selector">
+                        <button class="m-btn active" id="btn-bkash" onclick="setWMethod('BKASH')">BKASH</button>
+                        <button class="m-btn" id="btn-nagad" onclick="setWMethod('NAGAD')">NAGAD</button>
+                    </div>
+                    <input type="number" id="w_num" placeholder="পার্সোনাল নম্বর" class="elite-input">
+                    <input type="number" id="w_amt" placeholder="৳ পরিমাণ (Min ৳20)" class="elite-input">
+                    <button class="elite-btn" onclick="withdraw()">SEND REQUEST</button>
                 </div>
+                
+                <h3 style="margin: 20px 0 10px 5px;"><i class="fa-solid fa-clock-rotate-left"></i> Withdrawal History</h3>
+                <div id="withdraw-list"></div>
             </div>
 
             <div id="refer" class="page">
-                <div style="text-align:center; padding:30px; background:var(--glass); border-radius:30px;">
-                    <i class="fa-solid fa-link" style="font-size:50px; color:var(--primary); margin-bottom:15px;"></i>
-                    <h3>Invite Network</h3>
-                    <p style="color:#888; font-size:12px; margin:10px 0;">রেফারে ২ টাকা ডায়ামন্ড বোনাস!</p>
-                    <div id="ref_link" style="padding:15px; background:rgba(0,0,0,0.3); border-radius:15px; border:1px dashed var(--primary); font-size:10px; word-break:break-all; margin-bottom:20px; color:var(--primary);">...</div>
-                    <button class="elite-btn" onclick="copy()">COPY LINK</button>
+                <div style="background:var(--glass); border:1px solid rgba(255,255,255,0.1); padding:40px 20px; border-radius:40px; text-align:center;">
+                    <i class="fa-solid fa-users-viewfinder" style="font-size:60px; color:var(--primary);"></i>
+                    <div style="margin:25px 0;">
+                        <span style="color:#888; font-size:12px;">YOUR REFERRALS</span>
+                        <div id="total_ref_count" style="font-size:50px; font-weight:900; color:#fff;">0</div>
+                    </div>
+                    <span style="color:#aaa; font-size:11px;">SHARE YOUR CODE</span>
+                    <div id="my_ref_code" style="padding:20px; border:2px dashed var(--primary); color:var(--primary); font-size:30px; font-weight:900; margin:10px 0 30px; border-radius:20px;">...</div>
+                    <button class="elite-btn" onclick="copyRef()">COPY REFER LINK</button>
                 </div>
             </div>
         </div>
 
         <nav class="vip-dock">
-            <div class="dock-item active" onclick="nav('home', this)"><i class="fa-solid fa-bolt"></i><span>Home</span></div>
-            <div class="dock-item" onclick="nav('wallet', this)"><i class="fa-solid fa-building-columns"></i><span>Bank</span></div>
-            <div class="dock-item" onclick="nav('refer', this)"><i class="fa-solid fa-share-nodes"></i><span>Refer</span></div>
+            <div class="dock-item active" onclick="nav('home', this)"><i class="fa-solid fa-rocket"></i></div>
+            <div class="dock-item" onclick="nav('leaderboard', this)"><i class="fa-solid fa-ranking-star"></i></div>
+            <div class="dock-item" onclick="nav('wallet', this)"><i class="fa-solid fa-wallet"></i></div>
+            <div class="dock-item" onclick="nav('refer', this)"><i class="fa-solid fa-gift"></i></div>
         </nav>
     </div>
 
-    <div id="m_modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); backdrop-filter:blur(15px); z-index:15000; display:none; align-items:center; justify-content:center; padding:25px;">
-        <div style="background:#111; width:100%; border-radius:35px; padding:30px; border:1px solid rgba(255,255,255,0.1); text-align:center;">
-            <h2 id="m_title" style="color:var(--primary); margin-bottom:15px;"></h2>
-            <div id="m_desc" style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; color:#aaa; font-size:13px; text-align:left; margin-bottom:20px;"></div>
-            <input type="text" id="p_proof" placeholder="Type Proof Here" class="elite-input">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <button class="elite-btn" style="background:#fff; color:#000;" id="m_link_btn">GET LINK</button>
-                <button class="elite-btn" onclick="submitWork()">SUBMIT</button>
+    <div id="single-task-page">
+        <div style="padding:20px; background:rgba(0,0,0,0.8); border-bottom:1px solid #222;" onclick="closeTaskPage()"><i class="fa-solid fa-arrow-left"></i> BACK</div>
+        <img id="f_img" style="width:100%;">
+        <div style="padding:25px;">
+            <h1 id="f_title" style="font-size:28px;"></h1>
+            <div id="f_reward" style="color:#00FF88; font-weight:900; margin:15px 0; font-size:22px;"></div>
+            <div id="f_desc" style="background:rgba(255,255,255,0.03); padding:20px; border-radius:20px; margin-bottom:25px; font-size:14px; line-height:1.6; color:#ccc;"></div>
+            <input type="text" id="p_proof" placeholder="কাজের প্রুফ এখানে দিন" class="elite-input">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                <button class="elite-btn" style="background:#fff; color:#000;" id="f_link">VISIT LINK</button>
+                <button class="elite-btn" id="submit-btn" onclick="submitTask()">SUBMIT WORK</button>
             </div>
-            <p onclick="closeM()" style="margin-top:20px; color:#555; cursor:pointer;">DISMISS</p>
         </div>
     </div>
 
@@ -143,78 +166,161 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     let tg = window.Telegram.WebApp;
-    tg.expand();
+    let uID = tg.initDataUnsafe?.user?.id || "990011";
+    let activeGig = null; let currentWithdrawMethod = "BKASH"; let mySubmissions = {}; let lastBal = 0;
 
-    let uID = tg.initDataUnsafe?.user?.id || "778899";
-    let refBy = tg.initDataUnsafe?.start_param || null;
-    let activeGig = null;
-    let captchaRes = 0;
-
-    function goCaptcha() { document.getElementById('ad-screen').style.display = 'none'; document.getElementById('captcha-screen').style.display = 'flex'; gen(); }
-    function gen() { let n1 = Math.floor(Math.random()*15)+5; let n2 = Math.floor(Math.random()*10)+2; captchaRes = n1+n2; document.getElementById('math-ques').innerText = n1+" + "+n2; }
-    function verify() { if(parseInt(document.getElementById('math-ans').value) === captchaRes) { document.getElementById('captcha-screen').style.display='none'; document.getElementById('main-app').style.display='block'; init(); } else { tg.showAlert("Incorrect!"); gen(); } }
-
-    function openImg(url) { 
-        document.getElementById('full-img').src = url; 
-        document.getElementById('img-viewer').style.display = 'flex'; 
-        tg.HapticFeedback.impactOccurred('medium'); 
+    function goToMath() {
+        document.getElementById('ad-screen').style.display = 'none';
+        document.getElementById('invite-screen').style.display = 'flex';
+        let n1 = Math.floor(Math.random()*15)+10; let n2 = Math.floor(Math.random()*10)+5;
+        captchaRes = n1+n2; document.getElementById('math-box').innerText = n1 + " + " + n2;
     }
-    function closeImg() { document.getElementById('img-viewer').style.display = 'none'; }
 
-    function init() {
-        const user = tg.initDataUnsafe?.user;
-        document.getElementById('u_name').innerText = (user?.first_name || "DIAMOND USER").toUpperCase();
-        document.getElementById('u_avatar').src = user?.photo_url || "https://ui-avatars.com/api/?name=D&background=00d2ff&color=fff";
-        document.getElementById('ref_link').innerText = "https://t.me/FREEINCOMETAX2026_BOT?start=" + uID;
-        db.ref('users/' + uID).on('value', s => {
-            if(!s.exists()) { db.ref('users/' + uID).set({ balance: 0, refBy: refBy || "none" }); if(refBy && refBy !== uID.toString()) db.ref('users/'+refBy+'/balance').transaction(b=>(b||0)+2); }
-            document.getElementById('u_bal').innerText = "৳ " + (s.val().balance || 0).toFixed(2);
+    function verifyAndOpen() {
+        const ans = parseInt(document.getElementById('math-ans').value);
+        if(ans !== captchaRes) return Swal.fire('ভুল উত্তর!', '', 'error');
+        const refCode = document.getElementById('ref-code-input').value.trim();
+        
+        db.ref('users/' + uID).once('value', s => {
+            if(!s.exists()) {
+                let data = { balance: 0, uid: uID, referCount: 0, joined: Date.now() };
+                if(refCode && refCode !== uID.toString()) {
+                    db.ref('users/' + refCode).once('value', r => {
+                        if(r.exists()) {
+                            db.ref('users/' + refCode).update({ balance: (r.val().balance || 0) + 2, referCount: (r.val().referCount || 0) + 1 });
+                            data.balance = 2;
+                        }
+                        db.ref('users/' + uID).set(data).then(() => enterSystem());
+                    });
+                } else { db.ref('users/' + uID).set(data).then(() => enterSystem()); }
+            } else { enterSystem(); }
         });
-        loadTasks();
+    }
+
+    function enterSystem() { document.getElementById('invite-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; initApp(); }
+
+    function initApp() {
+        const u = tg.initDataUnsafe?.user;
+        const uName = u?.first_name || "ELITE USER";
+        const uPic = u?.photo_url || `https://ui-avatars.com/api/?name=${uName}&background=random&color=fff`;
+        db.ref('users/' + uID).update({ name: uName, photo: uPic });
+        
+        db.ref('users/' + uID).on('value', s => {
+            const d = s.val() || {};
+            if(d.balance > lastBal && lastBal !== 0) {
+                Swal.fire({ title: 'ব্যালেন্স আপডেট!', text: `৳ ${(d.balance - lastBal).toFixed(2)} যোগ হয়েছে।`, icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+            }
+            lastBal = d.balance || 0;
+            document.getElementById('u_bal').innerText = "৳ " + lastBal.toFixed(2);
+            document.getElementById('u_name').innerText = uName.toUpperCase();
+            document.getElementById('u_id_display').innerText = "ID: " + uID;
+            document.getElementById('u_avatar').src = uPic;
+            document.getElementById('total_ref_count').innerText = d.referCount || 0;
+            document.getElementById('my_ref_code').innerText = uID;
+        });
+
+        db.ref('proofs').on('value', snap => {
+            mySubmissions = {};
+            snap.forEach(c => { if(c.val().userId == uID) mySubmissions[c.val().taskID] = c.val().status; });
+            loadTasks();
+        });
+        loadLeaderboard(); loadHistory();
     }
 
     function loadTasks() {
         db.ref('tasks').on('value', snap => {
             let html = "";
-            snap.forEach(child => {
-                const t = child.val();
-                html += `<div class="diamond-card">
-                    <img src="${t.image}" class="task-img" onclick="openImg('${t.image}')">
-                    <div style="flex:1;" onclick="openM('${child.key}')">
-                        <b style="font-size:15px;">${t.name}</b><br>
-                        <span class="task-price">৳ ${t.reward}</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right" style="opacity:0.2" onclick="openM('${child.key}')"></i>
-                </div>`;
+            snap.forEach(c => {
+                const t = c.val(); const tID = c.key; const status = mySubmissions[tID];
+                if(status === 'approved') return;
+                let isLocked = status === 'pending';
+                html += `<div class="task-lux-card ${isLocked ? 'task-locked' : ''}"><img src="${t.image}" class="task-img"><div style="padding:0 5px; text-align:center;">${isLocked ? '<div class="pending-badge">পেমেন্ট চেক চলছে ⏳</div>' : ''}<b style="display:block; font-size:18px; margin-bottom:5px;">${t.name}</b><span style="color:#00FF88; font-weight:900;">Reward: ৳ ${t.reward}</span><button class="elite-btn" style="margin-top:15px; ${isLocked ? 'background:#333;' : ''}" onclick="${isLocked ? '' : `openTaskPage('${tID}')`}">${isLocked ? 'LOCKED' : 'START WORK'}</button></div></div>`;
             });
-            document.getElementById('mission-list').innerHTML = html || "<p style='text-align:center; color:#333;'>Loading...</p>";
+            document.getElementById('task-feed').innerHTML = html || "<p style='text-align:center;padding:50px;opacity:0.3;'>No Tasks Found</p>";
         });
     }
 
-    function openM(id) {
+    function openTaskPage(id) {
         db.ref('tasks/'+id).once('value', s => {
             activeGig = {...s.val(), id: id};
-            document.getElementById('m_title').innerText = activeGig.name;
-            document.getElementById('m_desc').innerText = activeGig.desc;
-            document.getElementById('m_link_btn').onclick = () => window.open(activeGig.link, '_blank');
-            document.getElementById('m_modal').style.display = 'flex';
+            document.getElementById('f_img').src = activeGig.image;
+            document.getElementById('f_title').innerText = activeGig.name;
+            document.getElementById('f_reward').innerText = "৳ " + activeGig.reward;
+            document.getElementById('f_desc').innerText = activeGig.desc;
+            document.getElementById('f_link').onclick = () => window.open(activeGig.link, '_blank');
+            document.getElementById('single-task-page').style.display = 'flex';
         });
     }
-    function closeM() { document.getElementById('m_modal').style.display = 'none'; }
-    function submitWork() {
+
+    function submitTask() {
         const p = document.getElementById('p_proof').value;
-        if(!p) return tg.showAlert("Proof required!");
-        db.ref('proofs').push({ userId: uID, taskName: activeGig.name, reward: activeGig.reward, proof: p, status: 'pending', time: Date.now() });
-        tg.showAlert("Submitted!"); closeM();
+        if(!p) return Swal.fire('প্রুফ দিন!', '', 'error');
+        const btn = document.getElementById('submit-btn');
+        btn.innerHTML = '<i class="fa-solid fa-rocket rocket-anim"></i> SENDING...';
+        setTimeout(() => {
+            db.ref('proofs').push({ userId: uID, taskID: activeGig.id, taskName: activeGig.name, reward: activeGig.reward, proof: p, status: 'pending', time: Date.now() });
+            Swal.fire('সফলভাবে পাঠানো হয়েছে!', 'অ্যাডমিন চেক করার পর ব্যালেন্সে টাকা যোগ হবে।', 'success');
+            btn.innerHTML = 'SUBMIT WORK'; closeTaskPage();
+        }, 1200);
     }
+
+    function setWMethod(m) { currentWithdrawMethod = m; document.getElementById('btn-bkash').classList.toggle('active', m === 'BKASH'); document.getElementById('btn-nagad').classList.toggle('active', m === 'NAGAD'); }
+
     function withdraw() {
         const a = parseFloat(document.getElementById('w_amt').value);
-        if(a < 20) return tg.showAlert("Min ৳20");
+        const n = document.getElementById('w_num').value;
+        if(a < 20) return Swal.fire('কমপক্ষে ২০ টাকা!', '', 'warning');
         db.ref('users/'+uID+'/balance').once('value', s => {
-            if(s.val() < a) return tg.showAlert("Low Balance!");
-            db.ref('users/'+uID+'/balance').set(s.val()-a);
-            db.ref('withdraws').push({ userId: uID, amount: a, number: document.getElementById('w_num').value, method: document.getElementById('w_method').value, status: 'pending', time: Date.now() });
-            tg.showAlert("Success!");
+            if((s.val()||0) < a) return Swal.fire('ব্যালেন্স কম!', '', 'error');
+            db.ref('users/'+uID).update({ balance: s.val() - a });
+            db.ref('withdraws').push({ userId: uID.toString(), amount: a, number: n, method: currentWithdrawMethod, status: 'pending', time: Date.now() });
+            Swal.fire('উইথড্র সফল!', '১-১২ ঘণ্টার মধ্যে পেমেন্ট পেয়ে যাবেন।', 'success');
+        });
+    }
+
+    function loadLeaderboard() {
+        db.ref('users').on('value', snap => {
+            let arr = []; snap.forEach(c => { let p = c.val(); p.uid = c.key; arr.push(p); });
+            arr.sort((a,b) => (b.balance || 0) - (a.balance || 0)); // ইনকাম অনুযায়ী র‍্যাঙ্কিং
+            let html = "";
+            arr.slice(0, 10).forEach((p, i) => {
+                let crown = i === 0 ? 'color:#FFD700;' : (i === 1 ? 'color:#C0C0C0;' : (i === 2 ? 'color:#CD7F32;' : ''));
+                html += `
+                <div class="rank-card">
+                    <div class="rank-number" style="${crown}">#${i+1}</div>
+                    <img src="${p.photo || ''}" class="rank-avatar">
+                    <div class="rank-info">
+                        <b style="font-size:16px;">${p.name}</b>
+                        <div class="rank-stats">
+                            <span>Income: <b>৳${(p.balance||0).toFixed(1)}</b></span>
+                            <span>Refers: <b>${p.referCount||0}</b></span>
+                        </div>
+                    </div>
+                    ${i < 3 ? '<i class="fa-solid fa-crown" style="position:absolute; right:15px; top:15px; font-size:20px;'+crown+'"></i>' : ''}
+                </div>`;
+            });
+            document.getElementById('rank-list').innerHTML = html || "<p style='text-align:center; opacity:0.3;'>No Leaders Yet</p>";
+        });
+    }
+
+    function loadHistory() {
+        db.ref('withdraws').orderByChild('userId').equalTo(uID.toString()).on('value', snap => {
+            let html = ""; let list = []; snap.forEach(c => list.push(c.val()));
+            list.reverse().forEach(h => {
+                let color = h.status === 'pending' ? '#FFD700' : (h.status === 'success' ? '#00FF88' : '#FF4B4B');
+                html += `
+                <div class="history-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <b>${h.method} Payout</b>
+                        <b style="color:var(--primary); font-size:18px;">৳${h.amount}</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                        <small style="opacity:0.6;">${h.number}</small>
+                        <span class="status-pill" style="background:${color}22; color:${color}; border:1px solid ${color}">${h.status}</span>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('withdraw-list').innerHTML = html || "<p style='text-align:center; opacity:0.3; padding:20px;'>No History Found</p>";
         });
     }
 
@@ -222,8 +328,10 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.dock-item').forEach(t => t.classList.remove('active'));
         document.getElementById(id).classList.add('active'); el.classList.add('active');
+        tg.HapticFeedback.impactOccurred('light');
     }
-    function copy() { navigator.clipboard.writeText(document.getElementById('ref_link').innerText); tg.showAlert("Copied!"); }
+    function closeTaskPage() { document.getElementById('single-task-page').style.display = 'none'; }
+    function copyRef() { navigator.clipboard.writeText(uID); Swal.fire({ title: 'ID Copy!', icon: 'success', toast: true, position: 'top', showConfirmButton: false, timer: 1500 }); }
 </script>
 </body>
-    </html>
+                            </html>

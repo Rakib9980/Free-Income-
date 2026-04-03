@@ -3,288 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ASSET ELITE | VIP EDITION</title>
+    <title>DIAMOND ELITE | FIX EDITION</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        :root { --primary: #007AFF; --gold: #FF9500; --success: #34C759; --bg: #FFFFFF; --card: #F2F2F7; --text: #000000; }
+        :root { --primary: #00D2FF; --diamond: #E0EAFC; --gold: #FFD700; --glass: rgba(255, 255, 255, 0.08); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; height: 100vh; overflow: hidden; }
+        body { background: #050505; color: #fff; font-family: 'Outfit', sans-serif; height: 100vh; overflow: hidden; background-image: radial-gradient(circle at 50% -20%, #1a2a6c, #050505); }
 
-        /* Captcha Overlay */
-        #captcha-screen { position: fixed; inset: 0; background: #fff; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
-        .math-box { font-size: 32px; font-weight: 900; color: var(--primary); margin-bottom: 20px; background: var(--card); padding: 20px 40px; border-radius: 25px; border: 2px solid var(--primary); }
+        /* Intro Ad */
+        #ad-screen { position: fixed; inset: 0; background: #000; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
+        .diamond-logo { font-size: 80px; color: var(--primary); margin-bottom: 20px; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* Header VIP */
-        .app-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid #E5E5EA; }
-        .user-pill { display: flex; align-items: center; gap: 12px; }
-        .avatar-ring { width: 55px; height: 55px; padding: 3px; border-radius: 18px; background: linear-gradient(45deg, #007AFF, #FF9500, #34C759); animation: spin 3s linear infinite; position: relative; }
-        @keyframes spin { 100% { filter: hue-rotate(360deg); } }
-        .avatar-ring img { width: 100%; height: 100%; border-radius: 15px; background: #fff; }
-        .u-meta b { display: block; font-size: 16px; color: #000; }
-        .u-meta span { font-size: 10px; color: var(--primary); font-weight: 900; }
+        /* Security */
+        #captcha-screen { position: fixed; inset: 0; background: #050505; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
+        .math-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 30px 60px; border-radius: 30px; margin-bottom: 30px; }
 
-        /* Balance Card High Quality */
-        .balance-section { margin: 20px; background: linear-gradient(135deg, #007AFF, #0051FF); border-radius: 30px; padding: 30px; color: #fff; box-shadow: 0 15px 30px rgba(0,122,255,0.3); position: relative; overflow: hidden; }
-        .balance-section::before { content: 'VIP'; position: absolute; right: -10px; top: -10px; font-size: 80px; font-weight: 900; opacity: 0.1; color: #fff; }
-        .balance-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
-        .balance-amount { font-size: 42px; font-weight: 900; margin: 5px 0; }
-
-        /* Scroller Area */
-        .main-content { height: calc(100vh - 280px); overflow-y: auto; padding: 0 20px 100px; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Task Design */
-        .task-card { background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 15px; border: 1px solid #E5E5EA; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
-        .task-card:active { transform: scale(0.97); }
-        .task-icon { width: 60px; height: 60px; border-radius: 15px; object-fit: cover; border: 2px solid #fff; }
-        .task-info { flex: 1; }
-        .task-info b { font-size: 15px; display: block; margin-bottom: 4px; }
-        .task-reward { background: #fff; color: var(--success); padding: 8px 12px; border-radius: 12px; font-weight: 900; font-size: 14px; border: 1px solid var(--success); }
-
-        /* Dock Navigation */
-        .dock { position: fixed; bottom: 0; left: 0; right: 0; height: 85px; background: #fff; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #E5E5EA; z-index: 1000; padding-bottom: 15px; }
-        .dock-tab { text-align: center; color: #8E8E93; flex: 1; }
-        .dock-tab.active { color: var(--primary); }
-        .dock-tab i { font-size: 22px; display: block; margin-bottom: 4px; }
-        .dock-tab span { font-size: 10px; font-weight: 700; }
-
-        /* Inputs & Buttons */
-        .vip-input { width: 100%; padding: 18px; border-radius: 15px; background: var(--card); border: 1px solid #E5E5EA; margin-bottom: 15px; font-size: 16px; font-family: 'Outfit'; font-weight: 600; }
-        .vip-btn { width: 100%; padding: 20px; border-radius: 20px; border: none; font-weight: 900; font-size: 16px; cursor: pointer; transition: 0.3s; }
-        .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 10px 20px rgba(0,122,255,0.2); }
+        /* App Main */
+        .premium-header { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.5); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .avatar-box { width: 50px; height: 50px; padding: 2px; background: linear-gradient(45deg, #00d2ff, #f06); border-radius: 15px; animation: hue 3s infinite; }
+        @keyframes hue { 100% { filter: hue-rotate(360deg); } }
+        .avatar-box img { width: 100%; height: 100%; border-radius: 13px; object-fit: cover; }
         
-        /* Modal */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 25px; }
-        .modal-content { background: #fff; width: 100%; border-radius: 35px; padding: 30px; text-align: center; }
+        .compact-wallet { text-align: right; background: rgba(255,255,255,0.05); padding: 8px 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); }
+        .compact-wallet b { font-size: 18px; color: var(--primary); display: block; }
+
+        /* Content Area */
+        .main-container { height: calc(100vh - 160px); overflow-y: auto; padding: 15px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeInUp 0.5s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Diamond Task Card */
+        .diamond-card { background: var(--glass); border-radius: 22px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .task-img { width: 60px; height: 60px; border-radius: 15px; object-fit: cover; border: 2px solid var(--primary); cursor: zoom-in; }
+        .task-price { color: #00FF88; font-weight: 900; font-size: 13px; background: rgba(0,255,136,0.1); padding: 2px 10px; border-radius: 8px; }
+
+        /* Image Viewer (FIXED) */
+        #img-viewer { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 30000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        #img-viewer img { max-width: 90%; max-height: 80vh; border-radius: 20px; border: 2px solid var(--primary); }
+        .close-img { position: absolute; top: 40px; right: 25px; color: #fff; font-size: 35px; }
+
+        /* Dock (FIXED ICON) */
+        .vip-dock { position: fixed; bottom: 0; left: 0; right: 0; height: 85px; background: #000; display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .dock-item { color: #555; text-align: center; flex: 1; transition: 0.3s; }
+        .dock-item.active { color: var(--primary); }
+        .dock-item i { font-size: 24px; display: block; margin-bottom: 4px; }
+        .dock-item span { font-size: 10px; font-weight: 800; }
+
+        /* Premium Buttons */
+        .elite-btn { width: 100%; padding: 18px; border-radius: 18px; border: none; font-weight: 900; background: linear-gradient(90deg, #4facfe, #00f2fe); color: #fff; cursor: pointer; }
+        .elite-input { width: 100%; padding: 18px; border-radius: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
+    <div id="img-viewer">
+        <span class="close-img" onclick="closeImg()"><i class="fa-solid fa-xmark"></i></span>
+        <img id="full-img" src="">
+    </div>
+
+    <div id="ad-screen">
+        <div class="diamond-logo"><i class="fa-solid fa-gem"></i></div>
+        <h1 style="font-weight: 900; letter-spacing: 2px;">DIAMOND ELITE</h1>
+        <p style="color: #888; margin: 20px 0 40px; font-size: 14px;">The Ultimate Freelancing Powerhouse 2026.</p>
+        <button class="elite-btn" onclick="goCaptcha()" style="width: auto; padding: 15px 50px;">GET STARTED</button>
+    </div>
+
     <div id="captcha-screen">
-        <h2 style="margin-bottom:10px;">Security Check</h2>
-        <p style="color:gray; margin-bottom:25px;">অংকটি সমাধান করে মেইন অ্যাপে প্রবেশ করুন।</p>
-        <div class="math-box" id="math-ques">5 + 12</div>
-        <input type="number" id="math-ans" placeholder="আপনার উত্তর দিন" class="vip-input" style="text-align:center;">
-        <button class="vip-btn btn-primary" onclick="verifyCaptcha()">VERIFY & ENTER</button>
+        <div class="math-card"><div id="math-ques" style="font-size: 40px; font-weight: 900; color: var(--primary);"></div></div>
+        <input type="number" id="math-ans" placeholder="Enter Result" class="elite-input" style="text-align:center; max-width: 250px;">
+        <button class="elite-btn" onclick="verify()" style="max-width: 250px;">UNLOCK APP</button>
     </div>
 
     <div id="main-app" style="display:none;">
-        <div class="app-header">
-            <div class="user-pill">
-                <div class="avatar-ring"><img id="u_avatar" src=""></div>
-                <div class="u-meta">
-                    <b id="u_name">PARTNER</b>
-                    <span id="u_id">UID: 000000</span>
-                </div>
+        <header class="premium-header">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="avatar-box"><img id="u_avatar" src=""></div>
+                <div><b id="u_name" style="font-size:14px;">...</b><span style="font-size:9px; color:var(--primary); font-weight:900; display:block;">ELITE MEMBER</span></div>
             </div>
-            <i class="fa-solid fa-crown" style="color:var(--gold); font-size:20px;"></i>
-        </div>
+            <div class="compact-wallet"><span>Diamond Bal</span><b id="u_bal">৳ 0.00</b></div>
+        </header>
 
-        <div class="balance-section">
-            <div class="balance-label">Total Assets</div>
-            <div class="balance-amount" id="u_bal">৳ 0.00</div>
-            <div style="font-size:10px; opacity:0.8; font-weight:900;">★ ELITE VERIFIED ACCOUNT</div>
-        </div>
-
-        <div class="main-content">
+        <div class="main-container">
             <div id="home" class="page active">
-                <h3 style="margin-bottom:15px; font-weight:900;">Active Missions</h3>
-                <div id="mission-container"></div>
+                <h4 style="margin-bottom:15px; color:#555; letter-spacing:1px;">ACTIVE MISSIONS</h4>
+                <div id="mission-list"></div>
             </div>
 
             <div id="wallet" class="page">
-                <h3 style="margin-bottom:15px; font-weight:900;">Payout Gateway</h3>
-                <div style="background:var(--card); padding:20px; border-radius:25px; margin-bottom:20px;">
-                    <select id="w_method" class="vip-input"><option>BKASH PERSONAL</option><option>NAGAD PERSONAL</option></select>
-                    <input type="number" id="w_num" placeholder="পার্সোনাল নম্বর দিন" class="vip-input">
-                    <input type="number" id="w_amt" placeholder="টাকার পরিমাণ (মিনিমাম ২০)" class="vip-input">
-                    <button class="vip-btn btn-primary" onclick="handleWithdraw()">CONFIRM PAYOUT</button>
+                <div style="background:var(--glass); padding:25px; border-radius:25px; border:1px solid rgba(255,255,255,0.1);">
+                    <h3 style="margin-bottom:15px;">DIAMOND BANK</h3>
+                    <select id="w_method" class="elite-input"><option>BKASH</option><option>NAGAD</option></select>
+                    <input type="number" id="w_num" placeholder="Wallet Number" class="elite-input">
+                    <input type="number" id="w_amt" placeholder="Amount (৳)" class="elite-input">
+                    <button class="elite-btn" onclick="withdraw()">WITHDRAW NOW</button>
                 </div>
-                <p style="font-size:11px; color:gray; text-align:center;">পেমেন্ট রিকোয়েস্ট পাঠানোর ২৪ ঘণ্টার মধ্যে পেমেন্ট কমপ্লিট হবে।</p>
             </div>
 
             <div id="refer" class="page">
-                <div style="text-align:center; padding:20px;">
-                    <i class="fas fa-users-rectangle" style="font-size:60px; color:var(--primary); margin-bottom:20px;"></i>
-                    <h2 style="font-weight:900;">Affiliate System</h2>
-                    <p style="color:gray; font-size:13px; margin:15px 0;">প্রতিটি রেফারে পাবেন ২ টাকা বোনাস এবং লাইফটাইম কমিশন।</p>
-                    
-                    <div style="background:var(--card); padding:20px; border-radius:20px; border:1px dashed var(--primary); word-break:break-all; font-size:12px; color:var(--primary); font-weight:900; margin-bottom:20px;" id="ref_link">Loading...</div>
-                    <button class="vip-btn btn-primary" onclick="copyRef()">COPY MY LINK</button>
-                    
-                    <div style="margin-top:30px; text-align:left; background:var(--card); padding:20px; border-radius:20px;">
-                        <b style="font-size:14px; display:block; margin-bottom:10px;">Commission Details:</b>
-                        <div style="font-size:12px; color:#555;">
-                            • Level 1 Withdraw Commission: 2%<br>
-                            • Level 2 Withdraw Commission: 1%
-                        </div>
-                    </div>
+                <div style="text-align:center; padding:30px; background:var(--glass); border-radius:30px;">
+                    <i class="fa-solid fa-link" style="font-size:50px; color:var(--primary); margin-bottom:15px;"></i>
+                    <h3>Invite Network</h3>
+                    <p style="color:#888; font-size:12px; margin:10px 0;">রেফারে ২ টাকা ডায়ামন্ড বোনাস!</p>
+                    <div id="ref_link" style="padding:15px; background:rgba(0,0,0,0.3); border-radius:15px; border:1px dashed var(--primary); font-size:10px; word-break:break-all; margin-bottom:20px; color:var(--primary);">...</div>
+                    <button class="elite-btn" onclick="copy()">COPY LINK</button>
                 </div>
             </div>
         </div>
 
-        <div class="dock">
-            <div class="dock-tab active" onclick="nav('home', this)"><i class="fa-solid fa-layer-group"></i><span>Missions</span></div>
-            <div class="dock-tab" onclick="nav('wallet', this)"><i class="fa-solid fa-wallet"></i><span>Payout</span></div>
-            <div class="dock-tab" onclick="nav('refer', this)"><i class="fa-solid fa-users-gear"></i><span>Invite</span></div>
-        </div>
+        <nav class="vip-dock">
+            <div class="dock-item active" onclick="nav('home', this)"><i class="fa-solid fa-bolt"></i><span>Home</span></div>
+            <div class="dock-item" onclick="nav('wallet', this)"><i class="fa-solid fa-building-columns"></i><span>Bank</span></div>
+            <div class="dock-item" onclick="nav('refer', this)"><i class="fa-solid fa-share-nodes"></i><span>Refer</span></div>
+        </nav>
     </div>
 
-    <div id="m_modal" class="modal">
-        <div class="modal-content">
-            <h2 id="m_title" style="color:var(--primary)">Mission Details</h2>
-            <p id="m_desc" style="color:gray; font-size:13px; margin:20px 0;"></p>
-            <input type="text" id="p_proof" placeholder="আপনার প্রমাণ দিন (Username/ID)" class="vip-input">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="vip-btn" style="background:#000; color:#fff;" id="m_link_btn">OPEN TASK</button>
-                <button class="vip-btn btn-primary" onclick="submitWork()">SUBMIT</button>
+    <div id="m_modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); backdrop-filter:blur(15px); z-index:15000; display:none; align-items:center; justify-content:center; padding:25px;">
+        <div style="background:#111; width:100%; border-radius:35px; padding:30px; border:1px solid rgba(255,255,255,0.1); text-align:center;">
+            <h2 id="m_title" style="color:var(--primary); margin-bottom:15px;"></h2>
+            <div id="m_desc" style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; color:#aaa; font-size:13px; text-align:left; margin-bottom:20px;"></div>
+            <input type="text" id="p_proof" placeholder="Type Proof Here" class="elite-input">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <button class="elite-btn" style="background:#fff; color:#000;" id="m_link_btn">GET LINK</button>
+                <button class="elite-btn" onclick="submitWork()">SUBMIT</button>
             </div>
-            <button onclick="closeModal()" style="margin-top:20px; background:none; color:gray; font-weight:900;">BACK</button>
+            <p onclick="closeM()" style="margin-top:20px; color:#555; cursor:pointer;">DISMISS</p>
         </div>
     </div>
 
 <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBL-1gCDQXt7f2s3UVmEAhzotCneBkg1dM",
-      databaseURL: "https://free-income-tax-6d428-default-rtdb.firebaseio.com",
-      projectId: "free-income-tax-6d428",
-    };
+    const firebaseConfig = { apiKey: "AIzaSyBL-1gCDQXt7f2s3UVmEAhzotCneBkg1dM", databaseURL: "https://free-income-tax-6d428-default-rtdb.firebaseio.com", projectId: "free-income-tax-6d428" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     let tg = window.Telegram.WebApp;
     tg.expand();
 
-    let uID = tg.initDataUnsafe?.user?.id || "123456";
+    let uID = tg.initDataUnsafe?.user?.id || "778899";
     let refBy = tg.initDataUnsafe?.start_param || null;
     let activeGig = null;
     let captchaRes = 0;
 
-    // ১. ক্যাপচা জেনারেশন
-    function genCaptcha() {
-        let n1 = Math.floor(Math.random() * 20) + 1;
-        let n2 = Math.floor(Math.random() * 20) + 1;
-        captchaRes = n1 + n2;
-        document.getElementById('math-ques').innerText = `${n1} + ${n2}`;
-    }
+    function goCaptcha() { document.getElementById('ad-screen').style.display = 'none'; document.getElementById('captcha-screen').style.display = 'flex'; gen(); }
+    function gen() { let n1 = Math.floor(Math.random()*15)+5; let n2 = Math.floor(Math.random()*10)+2; captchaRes = n1+n2; document.getElementById('math-ques').innerText = n1+" + "+n2; }
+    function verify() { if(parseInt(document.getElementById('math-ans').value) === captchaRes) { document.getElementById('captcha-screen').style.display='none'; document.getElementById('main-app').style.display='block'; init(); } else { tg.showAlert("Incorrect!"); gen(); } }
 
-    function verifyCaptcha() {
-        let ans = document.getElementById('math-ans').value;
-        if(parseInt(ans) === captchaRes) {
-            document.getElementById('captcha-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            initUser();
-        } else {
-            tg.showAlert("ভুল উত্তর! আবার চেষ্টা করুন।");
-            genCaptcha();
-        }
+    function openImg(url) { 
+        document.getElementById('full-img').src = url; 
+        document.getElementById('img-viewer').style.display = 'flex'; 
+        tg.HapticFeedback.impactOccurred('medium'); 
     }
+    function closeImg() { document.getElementById('img-viewer').style.display = 'none'; }
 
-    function initUser() {
+    function init() {
         const user = tg.initDataUnsafe?.user;
-        document.getElementById('u_name').innerText = (user?.first_name || "PARTNER").toUpperCase();
-        document.getElementById('u_avatar').src = user?.photo_url || "https://ui-avatars.com/api/?name=U&background=007AFF&color=fff";
-        document.getElementById('u_id').innerText = "UID: " + uID;
+        document.getElementById('u_name').innerText = (user?.first_name || "DIAMOND USER").toUpperCase();
+        document.getElementById('u_avatar').src = user?.photo_url || "https://ui-avatars.com/api/?name=D&background=00d2ff&color=fff";
         document.getElementById('ref_link').innerText = "https://t.me/FREEINCOMETAX2026_BOT?start=" + uID;
-
-        // ইউজার ডাটা হ্যান্ডেল (রেফার বোনাস সহ)
-        db.ref('users/' + uID).once('value', s => {
-            if(!s.exists()) {
-                let initialData = { balance: 0, refBy: refBy || "none", taskDone: 0, withdrawn: 0 };
-                db.ref('users/' + uID).set(initialData);
-                
-                // রেফারারকে ২ টাকা বোনাস
-                if(refBy && refBy !== uID.toString()) {
-                    db.ref('users/' + refBy + '/balance').transaction(b => (b || 0) + 2);
-                }
-            }
+        db.ref('users/' + uID).on('value', s => {
+            if(!s.exists()) { db.ref('users/' + uID).set({ balance: 0, refBy: refBy || "none" }); if(refBy && refBy !== uID.toString()) db.ref('users/'+refBy+'/balance').transaction(b=>(b||0)+2); }
+            document.getElementById('u_bal').innerText = "৳ " + (s.val().balance || 0).toFixed(2);
         });
-
-        // ব্যালেন্স লাইভ আপডেট
-        db.ref('users/' + uID + '/balance').on('value', s => {
-            document.getElementById('u_bal').innerText = "৳ " + (s.val() || 0).toFixed(2);
-        });
-
-        loadMissions();
+        loadTasks();
     }
 
-    function loadMissions() {
+    function loadTasks() {
         db.ref('tasks').on('value', snap => {
             let html = "";
             snap.forEach(child => {
                 const t = child.val();
-                html += `
-                <div class="task-card" onclick="openMission('${btoa(JSON.stringify({...t, id: child.key}))}')">
-                    <img src="${t.image}" class="task-icon">
-                    <div class="task-info"><b>${t.name}</b><small style="color:gray">Limit: ${t.completedCount||0}/${t.limit}</small></div>
-                    <div class="task-reward">৳${t.reward}</div>
+                html += `<div class="diamond-card">
+                    <img src="${t.image}" class="task-img" onclick="openImg('${t.image}')">
+                    <div style="flex:1;" onclick="openM('${child.key}')">
+                        <b style="font-size:15px;">${t.name}</b><br>
+                        <span class="task-price">৳ ${t.reward}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="opacity:0.2" onclick="openM('${child.key}')"></i>
                 </div>`;
             });
-            document.getElementById('mission-container').innerHTML = html || "<center>No Missions.</center>";
+            document.getElementById('mission-list').innerHTML = html || "<p style='text-align:center; color:#333;'>Loading...</p>";
+        });
+    }
+
+    function openM(id) {
+        db.ref('tasks/'+id).once('value', s => {
+            activeGig = {...s.val(), id: id};
+            document.getElementById('m_title').innerText = activeGig.name;
+            document.getElementById('m_desc').innerText = activeGig.desc;
+            document.getElementById('m_link_btn').onclick = () => window.open(activeGig.link, '_blank');
+            document.getElementById('m_modal').style.display = 'flex';
+        });
+    }
+    function closeM() { document.getElementById('m_modal').style.display = 'none'; }
+    function submitWork() {
+        const p = document.getElementById('p_proof').value;
+        if(!p) return tg.showAlert("Proof required!");
+        db.ref('proofs').push({ userId: uID, taskName: activeGig.name, reward: activeGig.reward, proof: p, status: 'pending', time: Date.now() });
+        tg.showAlert("Submitted!"); closeM();
+    }
+    function withdraw() {
+        const a = parseFloat(document.getElementById('w_amt').value);
+        if(a < 20) return tg.showAlert("Min ৳20");
+        db.ref('users/'+uID+'/balance').once('value', s => {
+            if(s.val() < a) return tg.showAlert("Low Balance!");
+            db.ref('users/'+uID+'/balance').set(s.val()-a);
+            db.ref('withdraws').push({ userId: uID, amount: a, number: document.getElementById('w_num').value, method: document.getElementById('w_method').value, status: 'pending', time: Date.now() });
+            tg.showAlert("Success!");
         });
     }
 
     function nav(id, el) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.dock-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        el.classList.add('active');
-        tg.HapticFeedback.impactOccurred('light');
+        document.querySelectorAll('.dock-item').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.add('active'); el.classList.add('active');
     }
-
-    function openMission(data) {
-        activeGig = JSON.parse(atob(data));
-        document.getElementById('m_title').innerText = activeGig.name;
-        document.getElementById('m_desc').innerText = activeGig.desc;
-        document.getElementById('m_link_btn').onclick = () => window.open(activeGig.link, '_blank');
-        document.getElementById('m_modal').style.display = 'flex';
-    }
-
-    function closeModal() { document.getElementById('m_modal').style.display = 'none'; }
-
-    function submitWork() {
-        const p = document.getElementById('p_proof').value;
-        if(!p) return tg.showAlert("Proof Required!");
-        db.ref('proofs').push({ userId: uID, taskName: activeGig.name, reward: activeGig.reward, proof: p });
-        tg.showAlert("Submitted! Payout will be added after review.");
-        closeModal();
-    }
-
-    function handleWithdraw() {
-        const a = parseFloat(document.getElementById('w_amt').value);
-        const n = document.getElementById('w_num').value;
-        if(a < 20 || !n) return tg.showAlert("Min Withdraw ৳20");
-        
-        db.ref('users/' + uID).once('value', s => {
-            const data = s.val();
-            if(data.balance < a) return tg.showAlert("Insufficient balance!");
-            
-            // ব্যালেন্স কাটা
-            db.ref('users/' + uID + '/balance').set(data.balance - a);
-            
-            // উইথড্র রিকোয়েস্ট পাঠানো
-            db.ref('withdraws').push({ userId: uID, amount: a, number: n, method: document.getElementById('w_method').value, status: 'pending' });
-            
-            // রেফার কমিশন চেইন (Admin Panel থেকে পেমেন্ট সাকসেস করার সময় এটি কার্যকর হবে - তবে এখানে লজিক দিয়ে রাখা হলো)
-            // নোট: কমিশন সাধারণত এডমিন পেমেন্ট কনফার্ম করলে এড হওয়া ভালো।
-            
-            tg.showAlert("Request Sent!");
-        });
-    }
-
-    function copyRef() {
-        navigator.clipboard.writeText(document.getElementById('ref_link').innerText);
-        tg.showAlert("Referral Link Copied!");
-    }
-
-    genCaptcha();
+    function copy() { navigator.clipboard.writeText(document.getElementById('ref_link').innerText); tg.showAlert("Copied!"); }
 </script>
 </body>
-</html>
+    </html>
